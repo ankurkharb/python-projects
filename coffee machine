@@ -1,0 +1,109 @@
+MENU = {
+    "espresso": {
+        "ingredients": {
+            "water": 50,
+            "coffee": 18,
+        },
+        "cost": 1.5,
+    },
+    "latte": {
+        "ingredients": {
+            "water": 200,
+            "milk": 150,
+            "coffee": 24,
+        },
+        "cost": 2.5,
+    },
+    "cappuccino": {
+        "ingredients": {
+            "water": 250,
+            "milk": 100,
+            "coffee": 24,
+        },
+        "cost": 3.0,
+    }
+}
+
+resources = {
+    "water": 300,
+    "milk": 200,
+    "coffee": 100,
+    "cost": 0.00
+}
+
+def resource_deduct(user_choice):
+    if user_choice == "espresso":
+        resources["water"] -= MENU["espresso"]["ingredients"]["water"]
+        resources["coffee"] -= MENU["espresso"]["ingredients"]["coffee"]
+    elif user_choice == "latte":
+        resources["water"] -= MENU["latte"]["ingredients"]["water"]
+        resources["milk"] -= MENU["latte"]["ingredients"]["milk"]
+        resources["coffee"] -= MENU["latte"]["ingredients"]["coffee"]
+    elif user_choice == "cappuccino":
+        resources["water"] -= MENU["cappuccino"]["ingredients"]["water"]
+        resources["milk"] -= MENU["cappuccino"]["ingredients"]["milk"]
+        resources["coffee"] -= MENU["cappuccino"]["ingredients"]["coffee"]
+
+
+def calculate_coins(user_choice):
+    print("Please Insert coins")
+    quater = int(input("How many quarters? "))
+    dime = int(input("How many dimes? "))
+    nickel = int(input("How many nickles? "))
+    penny = int(input("How many pennies? "))
+
+    total_Sum = 0.25*quater+0.10*dime+0.05*nickel+0.01*penny
+    if user_choice == "espresso":
+        if total_Sum >= MENU['espresso']['cost']:
+            print("Here's your espresso")
+            print(f"Here's your change {total_Sum-MENU['espresso']['cost']}")
+            resources["cost"] += 1.50
+            resource_deduct(user_choice)
+        else:
+            print("Not enough money")
+            return
+    elif user_choice == "latte":
+        if total_Sum >= MENU['latte']['cost']:
+            print("Here's your latte")
+            print(f"Here's your change {total_Sum-MENU['latte']['cost']}")
+            resources["cost"] += 2.50
+            resource_deduct(user_choice)
+        else:
+            print("Not enough money")
+            return
+    elif user_choice == "cappuccino":
+        if total_Sum >= MENU['cappuccino']['cost']:
+            print("Here's your cappuccino")
+            print(f"Here's your change {total_Sum - MENU['cappuccino']['cost']}")
+            resources["cost"] += 3.00
+            resource_deduct(user_choice)
+        else:
+            print("Not enough money, money refunded")
+            return
+
+def calculate_resource(user_choice):
+    if user_choice == "espresso":
+        a = MENU["espresso"]["ingredients"]["water"] <= resources["water"]
+        b = MENU["espresso"]["ingredients"]["coffee"] <= resources["coffee"]
+        return a and b
+    elif user_choice == "latte":
+        a = MENU["latte"]["ingredients"]["water"] <= resources["water"]
+        b = MENU["latte"]["ingredients"]["milk"] <= resources["milk"]
+        c = MENU["latte"]["ingredients"]["coffee"] <= resources["coffee"]
+        return a and b and c
+    elif user_choice == "cappuccino":
+        a = MENU["cappuccino"]["ingredients"]["water"] <= resources["water"]
+        b = MENU["cappuccino"]["ingredients"]["milk"] <= resources["milk"]
+        c = MENU["cappuccino"]["ingredients"]["coffee"] <= resources["coffee"]
+        return a and b
+while True:
+    print("What Would you like? espresso / latte / cappuccino")
+    user_coffe_choice = input().lower()
+    if user_coffe_choice=="off":
+        break
+    if user_coffe_choice=="report":
+        print(f"The Machine have\n{resources['water']} ml water\n{resources['milk']} ml milk\n{resources['coffee']} gm coffe\n")
+    if not calculate_resource(user_coffe_choice):
+        break
+
+    calculate_coins(user_coffe_choice)
